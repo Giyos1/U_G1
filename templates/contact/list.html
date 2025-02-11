@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %} contact list {% endblock %}
+
+{% block content %}
+    <h1>Contact list</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">name</th>
+            <th scope="col">email</th>
+            <th scope="col">phone</th>
+            <th scope="col">address</th>
+            <th scope="col">action</th>
+        </tr>
+        </thead>
+        {% for contact in contacts %}
+            <tbody>
+            <tr>
+            <th scope="row">{{ contact.id }}</th>
+            <td>{{ contact.name }}</td>
+            <td>{{ contact.email }}</td>
+            <td>{{ contact.phone }}</td>
+            <td>{{ contact.address }}</td>
+            <td>
+                <button class="btn btn-primary"><a href="{% url 'contacts:contact_edit' contact.id %}"
+                                                   style="color: #f4f4f4">edit</a></button>
+                <button class="btn btn-danger"><a href="{% url 'contacts:contact_delete' contact.id %}"
+                                                  style="color: #f4f4f4">delete</a></button>
+                <button class="btn btn-success"><a href="{% url 'contacts:contact_detail' contact.id %}"
+                                                   style="color: #f4f4f4">view</a></button>
+            </td>
+
+
+
+        {% endfor %}
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
