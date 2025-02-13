@@ -5,14 +5,15 @@
 {% block content %}
     <form action="{% url 'contacts:contact_edit' contact.pk %}" method="post">
         {% csrf_token %}
-        <label for="name">name:</label><br>
-        <input type="text" id="name" name="name" value="{{ contact.name }}"><br><br>
-        <label for="email">email:</label><br>
-        <input type="email" id="email" name="email" value="{{ contact.email }}"><br><br>
-        <label for="phone">phone:</label><br>
-        <input type="text" id="phone" name="phone" value="{{ contact.phone }}"><br><br>
-        <label for="address">address:</label><br>
-        <input type="text" id="address" name="address" value="{{ contact.address }}"><br><br>
+        {{ forms.as_p }}
+{#        <label for="name">name:</label><br>#}
+{#        <input type="text" id="name" name="name" value="{{ contact.name }}"><br><br>#}
+{#        <label for="email">email:</label><br>#}
+{#        <input type="email" id="email" name="email" value="{{ contact.email }}"><br><br>#}
+{#        <label for="phone">phone:</label><br>#}
+{#        <input type="text" id="phone" name="phone" value="{{ contact.phone }}"><br><br>#}
+{#        <label for="address">address:</label><br>#}
+{#        <input type="text" id="address" name="address" value="{{ contact.address }}"><br><br>#}
         <input type="submit" value="Submit">
     </form>
 {% endblock %}

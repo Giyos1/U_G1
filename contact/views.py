@@ -1,5 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+
+from contact.forms import ContactForm, ContactModelForm
 from contact.models import Contact
 
 
@@ -12,28 +14,35 @@ def contact_list(request):
 
 
 def contact_create_form(request):
-    return render(request, "contact/create.html")
+    forms = ContactModelForm()
+    return render(request, "contact/create.html", context={"forms": forms})
 
 
 def contact_create(request):
-    name = request.POST.get("name")
-    email = request.POST.get("email")
-    phone = request.POST.get("phone")
-    address = request.POST.get("address")
-    Contact.objects.create(name=name, email=email, phone=phone, address=address)
+    forms = ContactModelForm(request.POST)
+    if not forms.is_valid():
+        return render(request, "contact/create.html", context={"forms": forms})
+    forms.save()
     return redirect("contacts:contact_list")
 
 
 def contact_edit(request, pk):
     if request.method == "POST":
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        address = request.POST.get("address")
-        Contact.objects.filter(pk=pk).update(name=name, email=email, phone=phone, address=address)
-        return redirect("contacts:contact_list")
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.update(Contact.objects.get(pk=pk))
+            return redirect("contacts:contact_list")
+        return render(request, "contact/edit.html", context={"forms": form, "contact": Contact.objects.get(pk=pk)})
     contact = Contact.objects.get(pk=pk)
-    return render(request, "contact/edit.html", context={"contact": contact})
+    forms = ContactForm(
+        initial={
+            "name": contact.name,
+            "email": contact.email,
+            "phone": contact.phone,
+            "address": contact.address,
+        }
+    )
+    return render(request, "contact/edit.html", context={"contact": contact, "forms": forms})
 
 
 def contact_delete(request, pk):
