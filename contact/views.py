@@ -1,15 +1,23 @@
-from tkinter.font import names
-
-from django.http import HttpResponse
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render, redirect
 
-from contact.forms import ContactForms, ContactModelForm
+from contact.forms import ContactModelForm
 from contact.models import Contact
 
 
 def contact_list(request):
+    q = request.GET.get("q")
     all_contacts = Contact.objects.all()
+    if q:
+        all_contacts = all_contacts.filter(Q(name__icontains=q) | Q(phone__icontains=q))
+
+    # pagination
+    paginator = Paginator(all_contacts, 5)
+    page_number = request.GET.get("page")
+    all_contacts = paginator.get_page(page_number)
     data = {
+        "q": q,
         "contacts": all_contacts,
     }
     return render(request, "contact/list.html", context=data)
