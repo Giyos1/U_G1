@@ -8,9 +8,9 @@ from contact.models import Contact
 
 def contact_list(request):
     q = request.GET.get("q")
-    all_contacts = Contact.objects.all()
-    if q:
-        all_contacts = all_contacts.filter(Q(name__icontains=q) | Q(phone__icontains=q))
+    all_contacts = Contact.objects.filter(is_deleted=True)
+    if q and q != "None":
+        all_contacts = Contact.objects.search(q)
 
     # pagination
     paginator = Paginator(all_contacts, 5)
@@ -60,7 +60,7 @@ def contact_edit(request, pk):
 
 
 def contact_delete(request, pk):
-    Contact.objects.filter(pk=pk).delete()
+    Contact.objects.filter(pk=pk).update(is_deleted=True)
     return redirect("contacts:contact_list")
 
 
