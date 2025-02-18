@@ -38,6 +38,5 @@
         </tr>
         </tbody>
     </table>
-    <button class="btn btn-primary"><a href="{% url 'contacts:contact_create_form' %}" style="color: #f4f4f4">create</a>
-    </button>
+    {% include "paginations.html" with page=contacts %}
 {% endblock %}
