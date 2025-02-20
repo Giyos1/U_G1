@@ -1,8 +1,10 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from accounts.forms import UserRegisterForm, LoginForm
+from accounts.forms import UserRegisterForm, LoginForm, ProfileEditForm
 from accounts.utils import login_required
+
+
 # from django.contrib.auth.decorators import login_required
 
 
@@ -45,3 +47,21 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect("accounts:login")
+
+
+@login_required()
+def profile(request):
+    user = request.user
+    return render(request, "accounts/profile.html", {"user": user})
+
+
+@login_required()
+def profile_edit(request):
+    if request.method == "POST":
+        forms = ProfileEditForm(request.POST, instance=request.user)
+        if forms.is_valid():
+            forms.save()
+            return redirect("accounts:profile")
+        return render(request, "accounts/profile_edit.html", {"forms": forms, "user": request.user})
+    forms = ProfileEditForm(instance=request.user)
+    return render(request, "accounts/profile_edit.html", {"forms": forms})

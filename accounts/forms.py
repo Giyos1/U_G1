@@ -36,3 +36,10 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
 
 
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username','first_name', 'last_name', 'email']
+        widgets = {
+            'email': forms.EmailInput()
+        }
