@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}
+    list of users
+{% endblock %}
+
+{% block content %}
+    {% for user in users %}
+        <div class="card">
+            pk: {{ user.pk }}<br>
+            username: {{ user.username }}<br>
+            email: {{ user.email }}<br>
+            first_name: {{ user.first_name }}<br>
+            last_name: {{ user.last_name }}<br>
+        </div>
+        <br>
+    {% endfor %}
+
+{% endblock %}
