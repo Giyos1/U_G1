@@ -30,6 +30,8 @@ class UserForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
+        if self.instance:
+            return self.instance.update(**self.cleaned_data)
         return User.objects.create_user(**self.cleaned_data)
 
 
@@ -48,3 +50,7 @@ class LoginForm(forms.Form):
         return cleaned_data
 
 
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email']

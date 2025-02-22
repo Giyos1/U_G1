@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <h5 class="card-text">{{ user.first_name }}</h5>
+            <h5 class="card-text">{{ user.last_name }}</h5>
+            <h5 class="card-text">{{ user.email }}</h5>
+            <button class="btn btn-primary"><a href="{% url 'accounts:profile_edit' %}">Edit</a></button>
+        </div>
+    </div>
+{% endblock %}
