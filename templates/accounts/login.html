@@ -6,4 +6,5 @@
         {% csrf_token %}
         <button>submit</button>
     </form>
+    <button class='btn btn-danger'><a href="{% url 'accounts:forgot_password' %}">forgot password</a></button>
 {% endblock %}

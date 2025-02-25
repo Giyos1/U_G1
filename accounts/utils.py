@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+import random
 
 
 def login_required(r='accounts:login'):
@@ -11,3 +12,8 @@ def login_required(r='accounts:login'):
         return wrapper
 
     return deco
+
+
+def code_generate():
+    code = random.randint(1000, 9999)
+    return code

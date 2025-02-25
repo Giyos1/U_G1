@@ -1,8 +1,11 @@
 from django.contrib.auth import login, authenticate, logout
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from accounts.forms import UserForm, LoginForm, ProfileForm
+from accounts.forms import UserForm, LoginForm, ProfileForm, ForgotPasswordForm, RestorePasswordForm
 from django.contrib.auth.decorators import login_required
+
+from accounts.service import send_email_alternative, send_email_async
 
 
 def register(request):
@@ -70,3 +73,27 @@ def profile_edit(request):
         return render(request, 'accounts/profile_edit.html', {'form': form})
     form = ProfileForm(instance=request.user)
     return render(request, 'accounts/profile_edit.html', {'form': form})
+
+
+def forgot_password(request):
+    if request.method == 'POST':
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            user = User.objects.filter(email=email).first()
+            send_email_async(email, user)
+            return HttpResponse("qabul qilindi borib emailinga qara!")
+        return render(request, 'accounts/forgot_password.html', context={'form': form})
+    form = ForgotPasswordForm()
+    return render(request, 'accounts/forgot_password.html', context={'form': form})
+
+
+def restore_password(request):
+    if request.method == 'POST':
+        form = RestorePasswordForm(request.POST)
+        if form.is_valid():
+            form.update()
+            return redirect('accounts:login')
+        return render(request, 'accounts/restore.html', context={'form': form})
+    form = RestorePasswordForm()
+    return render(request, 'accounts/restore.html', context={'form': form})
