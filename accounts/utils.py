@@ -1,13 +1,19 @@
 from django.shortcuts import redirect
+import random
 
 
-def login_required(path="accounts:login"):
-    def inner(func):
+def login_required(r='accounts:login'):
+    def deco(func):
         def wrapper(request, *args, **kwargs):
-            if not request.user.is_authenticated:
-                return redirect(path)
-            return func(request, *args, **kwargs)
+            if request.user.is_authenticated:
+                return func(request, *args, **kwargs)
+            return redirect(r)
 
         return wrapper
 
-    return inner
+    return deco
+
+
+def code_generate():
+    code = random.randint(1000, 9999)
+    return code

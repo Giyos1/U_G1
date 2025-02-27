@@ -19,35 +19,34 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="http://127.0.0.1:8000/book/">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="http://127.0.0.1:8000/contact/list/">Contact</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled">Disabled</a>
-                    </li>
-                </ul>
-                <form class="d-flex" method="get">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q" value={{ q }}>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="http://127.0.0.1:8000/contact/list/">Contact</a>
+                        </li>
+                        </ul> <!-- To'g'ri yopilgan ul -->
+
+                        <div class="d-flex ms-auto align-items-center">
+                            <a class="btn btn-primary me-2" href="{% url 'accounts:logout' %}">Logout</a>
+                            <a class="btn btn-primary me-2" href="{% url 'accounts:profile' %}">Profile</a>
+                            <form class="d-flex" method="get">
+                                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"
+                                       name="q" value="{{ q }}">
+                                <button class="btn btn-outline-success" type="submit">Search</button>
+                            </form>
+                        </div>
+
+
+                    {% else %}
+                        <div class="d-flex ms-auto">
+                            <a class="btn btn-primary me-2" href="{% url 'accounts:login' %}">Login</a>
+                            <a class="btn btn-primary" href="{% url 'accounts:register' %}">Register</a>
+                        </div>
+                    {% endif %}
             </div>
         </div>
     </nav>
 </header>
+
 <main>
     {% block content %}
         <h1>Xush kelibsiz!</h1>

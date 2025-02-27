@@ -1,4 +1,5 @@
 from django import forms
+from urllib3 import request
 
 from contact.models import Contact
 
@@ -65,3 +66,8 @@ class ContactModelForm(forms.ModelForm):
         if not phone.startswith('+998'):
             self.add_error('phone', 'Phone number must start with +998')
         return cleaned_data
+
+    def save(self, commit=True):
+        if self.instance:
+            return Contact.objects.filter(id=self.instance.id).update(**self.cleaned_data)
+        return Contact.objects.create(created_by=self.files.get("request").user, **self.cleaned_data)
