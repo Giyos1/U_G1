@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
+from accounts.models import User
 from django.contrib.auth.password_validation import password_changed
 from django.core.exceptions import ValidationError
 from django.forms import PasswordInput
@@ -14,7 +14,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'password', 're_password']
+        fields = ['first_name', 'last_name', 'username', 'email', 'password', 're_password']
         widgets = {
             "password": forms.PasswordInput()
         }
@@ -35,8 +35,9 @@ class UserForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        if self.instance:
-            return self.instance.update(**self.cleaned_data)
+        # if self.instance:
+        #     print(self.instance)
+        #     return self.instance.update(**self.cleaned_data)
         return User.objects.create_user(**self.cleaned_data)
 
 

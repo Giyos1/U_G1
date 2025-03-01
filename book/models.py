@@ -2,6 +2,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
+from common.models import Deleted
+
 
 class Category(models.TextChoices):
     BADIIY = ("badiiy", 'Badiiy')
@@ -13,7 +15,7 @@ def validate_full_name(value):
         raise ValidationError('Please enter a valid full name')
 
 
-class Author(models.Model):
+class Author(Deleted):
     full_name = models.CharField(max_length=50, validators=[validate_full_name])
     birth_date = models.DateField()
     phone_number = models.CharField(max_length=13)

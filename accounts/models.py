@@ -1,7 +1,25 @@
 from datetime import timedelta
-from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
+
+
+class UserRole(models.TextChoices):
+    ADMIN = ('admin', 'Admin')
+    Client = ('client', 'Client')
+    MANAGER = ('manager', 'Manager')
+
+
+class User(AbstractUser):
+    phone_number = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+    role = models.CharField(max_length=255, choices=UserRole.choices, default=UserRole.Client)
+
+    # def contact_count(self):
+    #     return self.user_contact.all().count()
+
+    def __str__(self):
+        return self.get_full_name()
 
 
 def time_default():

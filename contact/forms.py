@@ -68,6 +68,6 @@ class ContactModelForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        if self.instance:
-            return Contact.objects.filter(id=self.instance.id).update(**self.cleaned_data)
+        # if self.instance:
+        #     return Contact.objects.filter(id=self.instance.id).update(**self.cleaned_data)
         return Contact.objects.create(created_by=self.files.get("request").user, **self.cleaned_data)
