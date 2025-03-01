@@ -30,3 +30,15 @@ class Code(models.Model):
     code_number = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='code_user')
     expired_data = models.DateTimeField(default=time_default)
+
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+
+    class Meta:
+        permissions = [
+            ("can_publish_article", "Can Publish Article"),
+            ("can_edit_article", "Can Edit Article"),
+        ]

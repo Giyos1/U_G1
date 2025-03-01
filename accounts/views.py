@@ -101,7 +101,11 @@ def restore_password(request):
     return render(request, 'accounts/restore.html', context={'form': form})
 
 
-@has_permissions(role=UserRole.ADMIN)
+from django.contrib.auth.decorators import permission_required
+
+
+# @permission_required('admin.add_logentry', raise_exception=True)
 def dashboard(request):
-    user = User.objects.all().annotate(contact_count=Count('user_contact'))
+    user = User.objects.all()
+    print(user)
     return render(request, 'admin/dashboard.html', {"user": user})
