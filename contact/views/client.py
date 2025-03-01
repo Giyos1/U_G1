@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 # from django.db.models import Q
 from django.shortcuts import render, redirect
@@ -64,7 +65,7 @@ def contact_edit(request, pk):
     return render(request, "contact/edit.html", context={"contact": contact, "forms": forms})
 
 
-@login_required()
+@permission_required('contact.delete_contact', raise_exception=True)
 def contact_delete(request, pk):
     Contact.objects.filter(pk=pk).update(is_deleted=True)
     return redirect("contacts:contact_list")
@@ -74,4 +75,3 @@ def contact_delete(request, pk):
 def contact_detail(request, pk):
     contact = Contact.objects.get(pk=pk)
     return render(request, "contact/detail.html", context={"contact": contact})
-

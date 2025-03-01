@@ -1,8 +1,7 @@
 from datetime import timedelta
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import AbstractUser
-
+from django.contrib.auth.models import AbstractUser,Group
 
 class UserRole(models.TextChoices):
     ADMIN = ('admin', 'Admin')

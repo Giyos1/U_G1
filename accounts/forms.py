@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import Group
+
 from accounts.models import User
-from django.contrib.auth.password_validation import password_changed
 from django.core.exceptions import ValidationError
 from django.forms import PasswordInput
 from django.utils import timezone
@@ -38,7 +39,10 @@ class UserForm(forms.ModelForm):
         # if self.instance:
         #     print(self.instance)
         #     return self.instance.update(**self.cleaned_data)
-        return User.objects.create_user(**self.cleaned_data)
+        user = User.objects.create_user(**self.cleaned_data)
+        client_role = Group.objects.get_or_create('client')
+        user.groups.add(client_role)
+        return user
 
 
 class LoginForm(forms.Form):

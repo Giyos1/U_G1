@@ -1,10 +1,11 @@
 from django.contrib.auth import login, authenticate, logout
 from django.db.models import F, Count
+from django.db.models.functions import Trunc
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from accounts.models import User, UserRole
 from accounts.forms import UserForm, LoginForm, ProfileForm, ForgotPasswordForm, RestorePasswordForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 
 from accounts.service import send_email_alternative, send_email_async
 from accounts.utils import has_permissions
@@ -101,7 +102,7 @@ def restore_password(request):
     return render(request, 'accounts/restore.html', context={'form': form})
 
 
-@has_permissions(role=UserRole.ADMIN)
+@permission_required('contact.view_contact', raise_exception=True)
 def dashboard(request):
     user = User.objects.all().annotate(contact_count=Count('user_contact'))
     return render(request, 'admin/dashboard.html', {"user": user})

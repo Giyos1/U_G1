@@ -40,3 +40,14 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+
+    class Meta:
+        permissions = [
+            ("can_publish_article", "Can Publish Article"),
+            ("can_edit_article", "Can Edit Article"),
+        ]
