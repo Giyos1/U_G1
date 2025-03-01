@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "book",
     "contact",
     "accounts",
+    'common'
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "giyosoripov4@gmail.com"
 EMAIL_HOST_PASSWORD = "tqbt lyhf vawv uqvr"
+
+AUTH_USER_MODEL = 'accounts.User'

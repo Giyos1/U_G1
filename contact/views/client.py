@@ -33,7 +33,7 @@ def contact_create_form(request):
 
 @login_required()
 def contact_create(request):
-    forms = ContactModelForm(request.POST, {'request': request})
+    forms = ContactModelForm(request.POST, {'request': request}, instance=None)
     if forms.is_valid():
         forms.save()
         return redirect("contacts:contact_list")
@@ -74,3 +74,4 @@ def contact_delete(request, pk):
 def contact_detail(request, pk):
     contact = Contact.objects.get(pk=pk)
     return render(request, "contact/detail.html", context={"contact": contact})
+

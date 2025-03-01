@@ -1,4 +1,9 @@
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
+
+from common.models import Base, Deleted
+from config.settings import BASE_DIR
 
 
 class CustomManager(models.Manager):
@@ -9,15 +14,12 @@ class CustomManager(models.Manager):
         return self.filter(name__icontains=q)
 
 
-class Contact(models.Model):
+class Contact(Deleted,Base):
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
     address = models.TextField()
-    is_deleted = models.BooleanField(default=False)
-    created_by = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, related_name='user_contact')
-    created_at = models.DateTimeField(auto_now=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_contact')
 
     objects = CustomManager()
     all_manager = models.Manager()

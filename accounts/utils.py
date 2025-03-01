@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 import random
 
@@ -9,6 +10,19 @@ def login_required(r='accounts:login'):
                 return func(request, *args, **kwargs)
             return redirect(r)
 
+        return wrapper
+
+    return deco
+
+
+def has_permissions(role):
+    def deco(func):
+        def wrapper(request, *args, **kwargs):
+            if request.user.is_authenticated:
+                if request.user.role == role:
+                    return func(request, *args, **kwargs)
+                raise PermissionDenied
+            return redirect('accounts:login')
         return wrapper
 
     return deco
