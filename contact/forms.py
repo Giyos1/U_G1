@@ -1,6 +1,4 @@
 from django import forms
-from urllib3 import request
-
 from contact.models import Contact
 
 
