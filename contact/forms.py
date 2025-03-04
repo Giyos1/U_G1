@@ -1,5 +1,7 @@
 from django import forms
-from contact.models import Contact
+from django.template.context_processors import request
+
+from contact.models import Contact, UploadedFile
 
 
 class ContactForms(forms.Form):
@@ -41,31 +43,38 @@ class ContactForms(forms.Form):
 class ContactModelForm(forms.ModelForm):
     class Meta:
         model = Contact
-        fields = ["name", "email", "phone", "address"]
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'emailingizni kiriting!'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'address': forms.TextInput(attrs={'class': 'form-control'}),
-        }
-        error_messages = {
-            'email': {'invalid': 'Email is invalid ekanku aka'},
-        }
+        fields = ["name", "email", "phone", "address", 'image', 'created_by']
+        # widgets = {
+        #     'name': forms.TextInput(attrs={'class': 'form-control'}),
+        #     'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'emailingizni kiriting!'}),
+        #     'phone': forms.TextInput(attrs={'class': 'form-control'}),
+        #     'address': forms.TextInput(attrs={'class': 'form-control'}),
+        # }
+        # error_messages = {
+        #     'email': {'invalid': 'Email is invalid ekanku aka'},
+        # }
 
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        if len(name) < 3:
-            raise forms.ValidationError('Name must be at least 3 characters long')
-        return name
+    # def clean_name(self):
+    #     name = self.cleaned_data.get('name')
+    #     if len(name) < 3:
+    #         raise forms.ValidationError('Name must be at least 3 characters long')
+    #     return name
 
-    def clean(self):
-        cleaned_data = super().clean()
-        phone = cleaned_data.get('phone')
-        if not phone.startswith('+998'):
-            self.add_error('phone', 'Phone number must start with +998')
-        return cleaned_data
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     phone = cleaned_data.get('phone')
+    #     if not phone.startswith('+998'):
+    #         self.add_error('phone', 'Phone number must start with +998')
+    #     return cleaned_data
 
-    def save(self, commit=True):
-        # if self.instance:
-        #     return Contact.objects.filter(id=self.instance.id).update(**self.cleaned_data)
-        return Contact.objects.create(created_by=self.files.get("request").user, **self.cleaned_data)
+    # def save(self, commit=True, *args, **kwargs):
+    #     print(self.cleaned_data)
+    #     if self.instance.id:
+    #         return Contact.objects.filter(id=self.instance.id).update(**self.cleaned_data)
+    #     return Contact.objects.create(created_by=kwargs.get('created_by'),image=re, **self.cleaned_data)
+
+
+class UploadFileForm(forms.ModelForm):
+    class Meta:
+        model = UploadedFile
+        fields = ['title', 'file']

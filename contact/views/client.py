@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 from accounts.utils import login_required
 from contact.forms import ContactModelForm
-from contact.models import Contact
+from contact.models import Contact, UploadedFile
 
 
 @login_required()
@@ -33,8 +33,11 @@ def contact_create_form(request):
 
 @login_required()
 def contact_create(request):
-    forms = ContactModelForm(request.POST, {'request': request}, instance=None)
+    forms = ContactModelForm(request.POST, request.FILES)
     if forms.is_valid():
+        # c = forms.save(commit=False)
+        # c.created_by = request.user
+        # c.save()
         forms.save()
         return redirect("contacts:contact_list")
     # name = request.POST.get("name")
@@ -75,3 +78,30 @@ def contact_detail(request, pk):
     contact = Contact.objects.get(pk=pk)
     return render(request, "contact/detail.html", context={"contact": contact})
 
+
+from contact.forms import UploadFileForm
+
+
+def upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('contacts:file_list')  # Fayllar ro‘yxatiga qaytarish
+    else:
+        form = UploadFileForm()
+    return render(request, 'upload.html', {'form': form})
+
+# def upload_file(request):
+#     if request.method == 'POST':
+#         title = request.POST.get('title')
+#         file = request.FILES.get('file')
+#
+#         if title and file:  # Agar fayl va sarlavha mavjud bo'lsa
+#             UploadedFile.objects.create(title=title, file=file)
+#             return redirect('contacts:contact_list')  # Yuklangan fayllar sahifasiga yo‘naltirish
+#     return render(request, 'upload.html')
+
+def file_list(request):
+    files = UploadedFile.objects.all()
+    return render(request, 'file_list.html', {'files': files})

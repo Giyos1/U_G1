@@ -19,6 +19,8 @@ from functools import partial
 from django.contrib import admin
 from django.http import HttpResponse
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 def index(request):
@@ -27,9 +29,9 @@ def index(request):
 
 
 urlpatterns = [
-    path("", index, name="index"),
-    path('admin/', admin.site.urls),
-    path('book/', include('book.urls')),
-    path('contact/', include('contact.urls')),
-    path("accounts/", include('accounts.urls'))
-]
+                  path("", index, name="index"),
+                  path('admin/', admin.site.urls),
+                  path('book/', include('book.urls')),
+                  path('contact/', include('contact.urls')),
+                  path("accounts/", include('accounts.urls'))
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

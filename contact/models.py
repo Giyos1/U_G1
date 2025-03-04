@@ -14,10 +14,11 @@ class CustomManager(models.Manager):
         return self.filter(name__icontains=q)
 
 
-class Contact(Deleted,Base):
+class Contact(Deleted, Base):
     name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=20)
+    image = models.FileField(upload_to='contact_image')
+    email = models.EmailField()
+    phone = models.CharField(max_length=255)
     address = models.TextField()
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_contact')
 
@@ -30,3 +31,12 @@ class Contact(Deleted,Base):
     class Meta:
         db_table = "contact"
         ordering = ["-created_at"]
+
+
+class UploadedFile(models.Model):
+    title = models.CharField(max_length=255)
+    file = models.FileField(upload_to='uploads/')  # Fayllar "media/uploads/" ichida saqlanadi
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

@@ -3,7 +3,7 @@
 {% block title %} create contact {% endblock %}
 
 {% block content %}
-    <form action="{% url 'contacts:contact_create' %}" method="post">
+    <form action="{% url 'contacts:contact_create' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ forms.as_p }}
         {#        <label for="name">name:</label><br>#}

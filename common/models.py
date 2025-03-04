@@ -4,7 +4,7 @@ from django.db.models import Manager
 
 class BaseQuerySet(models.QuerySet):
     def delete(self):
-        self.update(is_deleted=False)
+        self.update(is_deleted=True)
 
 
 class DeleteManager(models.Manager):

@@ -11,5 +11,7 @@ urlpatterns = [
     path("edit/<int:pk>/", views.contact_edit, name="contact_edit"),
     path("delete/<int:pk>/", views.contact_delete, name="contact_delete"),
     path("detail/<int:pk>/", views.contact_detail, name="contact_detail"),
+    path("upload/", views.upload_file, name="upload_file"),
+    path('files/', views.file_list, name='file_list'),
 
 ]

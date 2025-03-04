@@ -13,6 +13,8 @@
             <th scope="col">phone</th>
             <th scope="col">address</th>
             <th scope="col">action</th>
+            <th scope="col">image</th>
+
         </tr>
         </thead>
         {% for contact in contacts %}
@@ -31,8 +33,13 @@
                 <button class="btn btn-success"><a href="{% url 'contacts:contact_detail' contact.id %}"
                                                    style="color: #f4f4f4">view</a></button>
             </td>
-
-
+            <td>
+                {% if contact.image %}
+                    <img src="{{ contact.image.url }}" alt="Contact Image" width="50" height="50">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
 
         {% endfor %}
         </tr>

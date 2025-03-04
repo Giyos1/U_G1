@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Formset</title>
+</head>
+<body>
+<h2>Create Contact</h2>
+
+<!-- Asosiy forma -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h3>Contact Details</h3>
+    {{ formset.management_form }}
+    {% for form in formset %}
+        <div class="formset-form">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
+
+    <button type="submit">Save Contact</button>
+</form>
+
+<!-- Yangi form qo‘shish uchun formdan tashqarida GET so‘rovi -->
+<form method="get" action="">
+    {% for key, value in request.POST.items %}
+        <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+    <input type="hidden" name="extra" value="{{ extra|add:1 }}">
+    <button type="submit">+</button>
+</form>
+
+
+<a href="{% url 'contacts:contact_list' %}">Back</a>
+</body>
+</html>
