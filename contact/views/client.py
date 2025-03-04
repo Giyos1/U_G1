@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 # from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.template.defaultfilters import first
 
 from accounts.utils import login_required
-from contact.forms import ContactModelForm
-from contact.models import Contact
+from contact.forms import ContactModelForm, UploadForm
+from contact.models import Contact, UploadFile
 
 
 @login_required()
@@ -34,9 +35,9 @@ def contact_create_form(request):
 
 @login_required()
 def contact_create(request):
-    forms = ContactModelForm(request.POST, {'request': request}, instance=None)
+    forms = ContactModelForm(request.POST, instance=None)
     if forms.is_valid():
-        forms.save()
+        forms.save(request=request)
         return redirect("contacts:contact_list")
     # name = request.POST.get("name")
     # email = request.POST.get("email")
@@ -75,3 +76,41 @@ def contact_delete(request, pk):
 def contact_detail(request, pk):
     contact = Contact.objects.get(pk=pk)
     return render(request, "contact/detail.html", context={"contact": contact})
+
+
+def upload_file(request):
+    if request.method == 'POST':
+        # title = request.POST.get('title')
+        # file = request.FILES.get('file')
+        # if title and file:
+        #     UploadFile.objects.create(title=title, file=file)
+        #     return redirect('contacts:file_list')
+        forms = UploadForm(request.POST, request.FILES)
+        if forms.is_valid():
+            forms.save()
+            return redirect('contacts:file_list')
+        return render(request, 'upload/upload_file.html', {'form': forms})
+    forms = UploadForm()
+    return render(request, 'upload/upload_file.html', {'form': forms})
+
+
+def file_list(request):
+    files = UploadFile.objects.all()
+    return render(request, 'upload/file_list.html', {'files': files})
+
+
+def update(request, pk):
+    file = get_object_or_404(UploadFile, id=pk)
+    if request.method == "POST":
+        form = UploadForm(request.POST, request.FILES, instance=file)
+        if form.is_valid():
+            form.save()
+            return redirect('contacts:file_list')
+        return render(request, 'upload/update.html', {'form': form})
+    form = UploadForm(instance=file)
+    return render(request, 'upload/update.html', {'form': form})
+
+
+def file_view(request, pk):
+    file = get_object_or_404(UploadFile, id=pk)
+    return render(request,'upload/view.html',{'file':file})

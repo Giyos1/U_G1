@@ -1,7 +1,7 @@
 from django import forms
 from urllib3 import request
 
-from contact.models import Contact
+from contact.models import Contact, UploadFile
 
 
 class ContactForms(forms.Form):
@@ -67,7 +67,13 @@ class ContactModelForm(forms.ModelForm):
             self.add_error('phone', 'Phone number must start with +998')
         return cleaned_data
 
-    def save(self, commit=True):
-        # if self.instance:
-        #     return Contact.objects.filter(id=self.instance.id).update(**self.cleaned_data)
-        return Contact.objects.create(created_by=self.files.get("request").user, **self.cleaned_data)
+    def save(self, commit=True, *args, **kwargs):
+        if self.instance.id:
+            return Contact.objects.filter(id=self.instance.id).update(**self.cleaned_data)
+        return Contact.objects.create(created_by=kwargs.get('request').user, **self.cleaned_data)
+
+
+class UploadForm(forms.ModelForm):
+    class Meta:
+        model = UploadFile
+        fields = ['title', 'file']

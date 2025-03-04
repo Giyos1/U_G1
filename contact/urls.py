@@ -12,4 +12,9 @@ urlpatterns = [
     path("delete/<int:pk>/", views.contact_delete, name="contact_delete"),
     path("detail/<int:pk>/", views.contact_detail, name="contact_detail"),
 
+    path('upload/', views.upload_file, name='upload_file'),
+    path('file_list/', views.file_list, name='file_list'),
+    path('update_file/<int:pk>/', views.update, name='file_update'),
+    path('view/<int:pk>/', views.file_view, name='file_view'),
+
 ]

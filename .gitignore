@@ -50,3 +50,4 @@ wheels/
 .installed.cfg
 *.egg
 db.sqlite3
+media

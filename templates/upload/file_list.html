@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for file in files %}
+        {#                <img src="{{ file.file.url }}" alt="image" width="550px" height="550px">#}
+        <a href="{{ file.file.url }}"> {{ file.file.name }}</a>
+        <button class="btn btn-warning"><a href="{% url 'contacts:file_update' file.id %}">update</a></button>
+        <button class="btn btn-warning"><a href="{% url 'contacts:file_view' file.id %}">view</a></button>
+        <br>
+
+
+    {% endfor %}
+
+{% endblock %}

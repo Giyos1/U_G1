@@ -1,6 +1,9 @@
+import os
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 from common.models import Base, Deleted
 from config.settings import BASE_DIR
@@ -14,7 +17,7 @@ class CustomManager(models.Manager):
         return self.filter(name__icontains=q)
 
 
-class Contact(Deleted,Base):
+class Contact(Deleted, Base):
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
@@ -30,3 +33,13 @@ class Contact(Deleted,Base):
     class Meta:
         db_table = "contact"
         ordering = ["-created_at"]
+
+
+# def upload_to_dynamic(instance, filename):
+#     model_name = instance.type
+#     return os.path.join(f"{model_name}/", f"{timezone.now().date()}_{filename}")
+
+
+class UploadFile(Base):
+    title = models.CharField(max_length=255)
+    file = models.FileField(upload_to='upload_file/')
