@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group
+from django.db import transaction
 
-from accounts.models import User
+from accounts.models import User, Transaction
 from django.core.exceptions import ValidationError
 from django.forms import PasswordInput
 from django.utils import timezone
@@ -104,3 +105,30 @@ class RestorePasswordForm(forms.Form):
         user = User.objects.filter(username=self.cleaned_data.get('username')).first()
         user.set_password(self.cleaned_data.get('password'))
         user.save()
+
+
+class TransactionCreateForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ('from_acc', 'to_acc', 'amount')
+
+    def clean(self):
+        clean_data = super().clean()
+        from_acc = clean_data.get('from_acc')
+        amount = clean_data.get('amount')
+        if from_acc.balance < amount or amount < 0:
+            raise ValidationError('mablag yetarli emas')
+        return clean_data
+
+    @transaction.atomic
+    def save(self, commit=True):
+        clean_data = self.cleaned_data
+        from_acc = clean_data.get('from_acc')
+        to_acc = clean_data.get('to_acc')
+        amount = clean_data.get('amount')
+
+        from_acc.balance -= amount
+        to_acc.balance += amount
+        from_acc.save()
+        to_acc.save()
+        return Transaction.objects.create(**self.cleaned_data)

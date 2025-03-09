@@ -11,20 +11,23 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os.path
 from pathlib import Path
-
+from decouple import config
 from django.conf.global_settings import CSRF_TRUSTED_ORIGINS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# `.env` faylini o‘qish
+# env = environ.Env()
+# environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dee8tpg*^%r!j870jwt4c_v@_bsb$qq8wpp*#jzm_(3+jp*&vd'
+SECRET_KEY = config("SECRET_KEY", default='assss')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False)
 
 ALLOWED_HOSTS = ['*']
 
@@ -83,11 +86,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "library",
-        "USER": "postgres",
-        "PASSWORD": "12",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+        "NAME": config("DB_NAME", default="library2"),
+        "USER": config("DB_USER", default="postgres2"),
+        "PASSWORD": config("DB_PASSWORD", default="12"),
+        "HOST": config("DB_HOST", default="127.0.0.1"),
+        "PORT": config("DB_PORT", default=5432),
     }
 }
 

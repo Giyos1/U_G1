@@ -1,7 +1,10 @@
 from datetime import timedelta
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import AbstractUser,Group
+from django.contrib.auth.models import AbstractUser, Group
+
+from common.models import Base
+
 
 class UserRole(models.TextChoices):
     ADMIN = ('admin', 'Admin')
@@ -13,6 +16,7 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=255, choices=UserRole.choices, default=UserRole.Client)
+    balance = models.DecimalField(max_digits=12, decimal_places=2)
 
     # def contact_count(self):
     #     return self.user_contact.all().count()
@@ -29,3 +33,13 @@ class Code(models.Model):
     code_number = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='code_user')
     expired_data = models.DateTimeField(default=time_default)
+
+
+class Transaction(Base):
+    from_acc = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, related_name='from_acc_trans', null=True)
+    to_acc = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, related_name='to_acc_trans', null=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+
+    class Meta:
+        db_table = 'transaction'
+        ordering = ('-created_at',)

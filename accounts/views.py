@@ -1,14 +1,13 @@
 from django.contrib.auth import login, authenticate, logout
 from django.db.models import F, Count
-from django.db.models.functions import Trunc
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from accounts.models import User, UserRole
-from accounts.forms import UserForm, LoginForm, ProfileForm, ForgotPasswordForm, RestorePasswordForm
+from accounts.forms import UserForm, LoginForm, ProfileForm, ForgotPasswordForm, RestorePasswordForm, \
+    TransactionCreateForm
 from django.contrib.auth.decorators import login_required, permission_required
 
 from accounts.service import send_email_alternative, send_email_async
-from accounts.utils import has_permissions
 
 
 def register(request):
@@ -106,3 +105,14 @@ def restore_password(request):
 def dashboard(request):
     user = User.objects.all().annotate(contact_count=Count('user_contact'))
     return render(request, 'admin/dashboard.html', {"user": user})
+
+
+def create_transaction(request):
+    if request.method == 'POST':
+        form = TransactionCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('contacts:contact_list')
+        return render(request, 'transaction/create_transaction.html', {'form': form})
+    forms = TransactionCreateForm()
+    return render(request, 'transaction/create_transaction.html', {'form': forms})
