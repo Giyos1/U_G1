@@ -4,20 +4,21 @@ from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
 
 from accounts.models import Code
 from accounts.utils import code_generate
+from threading import Thread
 
 
-def send_email_letter():
+def send_email_letter(to):
     send_mail(
         subject='Test subject',
         message='test messege',
         from_email='giyosoripov4@gmail.com',
-        recipient_list=['giyosoripov4@gmail.com'],
-        # html_message="""
-        #     <main>
-        #         <h1>Xush kelibsiz!</h1>
-        #         <p>Bu sizning asosiy sahifangiz.</p>
-        #     </main>
-        # """
+        recipient_list=[to],
+        html_message="""
+            <main>
+                <h1>Xush kelibsiz!</h1>
+                <p>bizlar xursandmiz.</p>
+            </main>
+        """
     )
 
 
@@ -66,9 +67,11 @@ def send_email_alternative(to, user):
     email.send()
 
 
-from threading import Thread
-
-
 def send_email_async(to, user):
     thread1 = Thread(target=send_email_alternative, args=(to, user,))
+    thread1.start()
+
+
+def send_email_async_welcome(to):
+    thread1 = Thread(target=send_email_letter, args=(to,))
     thread1.start()
