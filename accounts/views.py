@@ -1,4 +1,5 @@
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.sessions.models import Session
 from django.db.models import F, Count
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -116,3 +117,14 @@ def create_transaction(request):
         return render(request, 'transaction/create_transaction.html', {'form': form})
     forms = TransactionCreateForm()
     return render(request, 'transaction/create_transaction.html', {'form': forms})
+
+
+def session_data_get_decode(request):
+    session_id = request.COOKIES.get('sessionid')
+    session = Session.objects.get(session_key=session_id)
+    # print(request.META)
+
+    session_data = session.get_decoded()
+    # for key, value in session_data.items():
+    #     print(key, value)
+    return HttpResponse('session data')
