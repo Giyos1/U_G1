@@ -32,6 +32,7 @@ class LoggUserAgentWriterMiddleware:
 
 class BlockIPMiddleware:
     requests = {}
+
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -42,8 +43,10 @@ class BlockIPMiddleware:
         if ip not in self.requests:
             self.requests[ip] = []
 
-        # 10 soniyadan eski so‘rovlarni o‘chirib tashlaymiz
-        self.requests[ip] = [t for t in self.requests[ip] if now - t < 10]
+        for i in self.requests[ip]:
+            if now - i > 10:
+                self.requests[ip].remove(i)
+
         if len(self.requests[ip]) >= 5:
             return HttpResponse(
                 "Siz 10 soniya ichida juda ko‘p so‘rov yubordingiz. Keyinroq urinib ko‘ring.")

@@ -16,5 +16,6 @@ urlpatterns = [
     path('file_list/', views.file_list, name='file_list'),
     path('update_file/<int:pk>/', views.update, name='file_update'),
     path('view/<int:pk>/', views.file_view, name='file_view'),
+    path('export/', views.export, name='export'),
 
 ]

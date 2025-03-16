@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
+from django.http import HttpResponse
 # from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaultfilters import first
@@ -7,6 +9,7 @@ from django.template.defaultfilters import first
 from accounts.utils import login_required
 from contact.forms import ContactModelForm, UploadForm
 from contact.models import Contact, UploadFile
+from contact.utils import export_exel
 
 
 @login_required()
@@ -113,4 +116,12 @@ def update(request, pk):
 
 def file_view(request, pk):
     file = get_object_or_404(UploadFile, id=pk)
-    return render(request,'upload/view.html',{'file':file})
+    return render(request, 'upload/view.html', {'file': file})
+
+
+@login_required()
+def export(request):
+    contact = Contact.objects.filter(created_by=request.user)
+    path = request.build_absolute_uri(settings.MEDIA_URL, export_exel(contact.values()))
+    # print(contact.values())
+    return HttpResponse(path)
