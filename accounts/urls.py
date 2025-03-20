@@ -5,6 +5,9 @@ from accounts import views
 
 app_name = 'accounts'
 urlpatterns = [
+    path('login/google/', views.google_login, name='google_login'),
+    path('google/callback', views.google_callback, name='google_callback'),
+    path('2fa/', views.two_factor_auth, name='2fa'),
     path('admin/dashboard', views.dashboard, name='dashboard'),
     path("register/", views.register, name='register'),
     path("login/", views.login_user, name='login'),

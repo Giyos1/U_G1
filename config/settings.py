@@ -13,6 +13,7 @@ import os.path
 from pathlib import Path
 from decouple import config
 from django.conf.global_settings import CSRF_TRUSTED_ORIGINS
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
 
     # third party
     'django_extensions',
+    'rosetta',
 
     # local
     "book",
@@ -54,6 +56,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -61,8 +64,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     # local middleware
-    'accounts.middleware.LoggIPWriterMiddleware',
-    'accounts.middleware.BlockIPMiddleware',
+    # 'accounts.middleware.LoggIPWriterMiddleware',
+    # 'accounts.middleware.BlockIPMiddleware',
 ]
 ROOT_URLCONF = 'config.urls'
 
@@ -119,13 +122,29 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+GOOGLE_CLIENT_ID = config("CLIENT_ID",'')
+GOOGLE_CLIENT_SECRET = config("SECRET_KEY",'')
+GOOGLE_REDIRECT_URI = config("REDIRECT_URI",'')
+GOOGLE_AUTH_URL = config("AUTH_URL",'')
+GOOGLE_USER_INFO_URL = config("USER_INFO_URL",'')
+GOOGLE_TOKEN_URL = config("TOKEN_URL",'')
 
 TIME_ZONE = 'Asia/Tashkent'
+LANGUAGE_CODE = 'en'  # Asosiy til (o'zgartirish mumkin)
+USE_I18N = True  # Internationalization yoqilgan
+USE_L10N = True  # Mahalliylashtirish yoqilgan
+USE_TZ = True
 
-USE_I18N = True
+LANGUAGES = [
+    ('en', _('English')),
+    ('uz', _('Uzbek')),
+    ('ru', _('Russian')),
+]
 
-USE_TZ = False
+# Tarjima fayllarini qayerda saqlashni ko'rsatish
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

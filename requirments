@@ -3,4 +3,6 @@ psycopg2-binary==2.9.10
 python-decouple==3.8
 pandas==2.2.3
 openpyxl==3.1.5
-
+django-rosetta==0.10.1
+requests==2.32.3
+pyotp==2.9.0

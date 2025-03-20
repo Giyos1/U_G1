@@ -122,6 +122,6 @@ def file_view(request, pk):
 @login_required()
 def export(request):
     contact = Contact.objects.filter(created_by=request.user)
-    path = request.build_absolute_uri(settings.MEDIA_URL, export_exel(contact.values()))
+    path = request.build_absolute_uri(settings.MEDIA_URL + export_exel(contact.values(), request.user.username))
     # print(contact.values())
-    return HttpResponse(path)
+    return render(request, 'contact/export.html', {'path': path})

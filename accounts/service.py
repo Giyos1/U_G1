@@ -1,3 +1,5 @@
+import pyotp
+from django.conf import settings
 from django.utils import timezone
 
 from django.core.mail import send_mail, EmailMessage, EmailMultiAlternatives
@@ -67,6 +69,14 @@ def send_email_alternative(to, user):
     email.send()
 
 
+def send_otp_code_email(to, otp):
+    subject = 'OTP code'
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [to, ]
+    message = f'Your OTP code is {otp}'
+    send_mail(subject, message, from_email, recipient_list)
+
+
 def send_email_async(to, user):
     thread1 = Thread(target=send_email_alternative, args=(to, user,))
     thread1.start()
@@ -74,4 +84,12 @@ def send_email_async(to, user):
 
 def send_email_async_welcome(to):
     thread1 = Thread(target=send_email_letter, args=(to,))
+    thread1.start()
+
+
+def otp_code_send_async(user):
+    user.generate_otc()
+    totp = pyotp.TOTP(user.totp_secret)
+    otp = totp.now()
+    thread1 = Thread(target=send_otp_code_email, args=(user.email, otp,))
     thread1.start()

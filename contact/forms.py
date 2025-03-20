@@ -2,6 +2,7 @@ from django import forms
 from urllib3 import request
 
 from contact.models import Contact, UploadFile
+from django.utils.translation import gettext_lazy as _
 
 
 class ContactForms(forms.Form):
@@ -44,6 +45,9 @@ class ContactModelForm(forms.ModelForm):
     class Meta:
         model = Contact
         fields = ["name", "email", "phone", "address"]
+        labels = {
+            "address": _("address")
+        }
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'emailingizni kiriting!'}),

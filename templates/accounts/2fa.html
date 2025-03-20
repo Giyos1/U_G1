@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="post">
+        {% if error %}
+            <h2>{{ error }}</h2>
+        {% endif %}
+        {% csrf_token %}
+        input 2fa code: <label>
+        <input type="text" name="2fa_code" value="{{ 2fa_code }}">
+    </label>
+        <button>submit</button>
+    </form>
+{% endblock %}

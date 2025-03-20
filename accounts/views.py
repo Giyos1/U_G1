@@ -8,7 +8,9 @@ from accounts.forms import UserForm, LoginForm, ProfileForm, ForgotPasswordForm,
     TransactionCreateForm
 from django.contrib.auth.decorators import login_required, permission_required
 
-from accounts.service import send_email_alternative, send_email_async
+from accounts.service import send_email_alternative, send_email_async, otp_code_send_async
+from config import settings
+import requests
 
 
 def register(request):
@@ -128,3 +130,58 @@ def session_data_get_decode(request):
     # for key, value in session_data.items():
     #     print(key, value)
     return HttpResponse('session data')
+
+
+def google_login(request):
+    auth_url = (
+        f"{settings.GOOGLE_AUTH_URL}"
+        f"?client_id={settings.GOOGLE_CLIENT_ID}"
+        f"&redirect_uri={settings.GOOGLE_REDIRECT_URI}"
+        f"&response_type=code"
+        f"&scope=openid email profile"
+    )
+    return redirect(auth_url)
+
+
+def google_callback(request):
+    code = request.GET.get("code")
+
+    token_data = {
+        "code": code,
+        "client_id": settings.GOOGLE_CLIENT_ID,
+        "client_secret": settings.GOOGLE_CLIENT_SECRET,
+        "redirect_uri": settings.GOOGLE_REDIRECT_URI,
+        "grant_type": "authorization_code",
+    }
+
+    token_response = requests.post(settings.GOOGLE_TOKEN_URL, data=token_data)
+    token_json = token_response.json()
+    access_token = token_json.get("access_token")
+
+    user_info_response = requests.get(settings.GOOGLE_USER_INFO_URL,
+                                      headers={"Authorization": f"Bearer {access_token}"})
+
+    user_info = user_info_response.json()
+    user, _ = User.objects.get_or_create(google_id=user_info.get("id"),
+                                         username=user_info.get("email"),
+                                         email=user_info.get("email"),
+                                         image=user_info.get("picture"),
+                                         first_name=user_info.get("given_name"),
+                                         last_name=user_info.get("family_name"),
+                                         )
+    login(request, user)
+
+    if user.is_2fa_enabled:
+        return redirect('accounts:2fa')
+    return redirect('accounts:profile')
+
+
+def two_factor_auth(request):
+    if request.method == 'POST':
+        otp = request.POST.get('2fa_code')
+        user = request.user
+        if user.verify_otp(otp):
+            return redirect('accounts:profile')
+        return render(request, 'accounts/2fa.html', {'error': 'OTP xato'})
+    otp_code_send_async(request.user)
+    return render(request, 'accounts/2fa.html')

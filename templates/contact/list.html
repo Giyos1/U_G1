@@ -12,6 +12,7 @@
             <th scope="col">email</th>
             <th scope="col">phone</th>
             <th scope="col">address</th>
+            <th scope="col">created_At</th>
             <th scope="col">action</th>
         </tr>
         </thead>
@@ -23,6 +24,7 @@
             <td>{{ contact.email }}</td>
             <td>{{ contact.phone }}</td>
             <td>{{ contact.address }}</td>
+            <td>{{ contact.created_at }}</td>
             <td>
                 <button class="btn btn-primary"><a href="{% url 'contacts:contact_edit' contact.id %}"
                                                    style="color: #f4f4f4">edit</a></button>
